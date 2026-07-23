@@ -1,22 +1,23 @@
-# [Project Name]
+# Jumbo'ngo
 
-One or two sentences: what this project is and who it's for (nonprofit client name + what problem it solves).
+JumBINGO is an online Bingo app where each box contains a Tufts or programming-related trivia question or task. Each member logs in with their Tufts credentials, and their account is automatically created by reading their names from the mail handle. When they log in, they see the team options and select one to join. Admins can view, update, and delete players, teams, and questions. Everyone can see the leaderboard, where teams and individuals are ranked by their dynamic points. 
 
 ## Tech Stack
 
-- Frontend:
-- Backend:
-- Database:
-- Auth:
-- Deployment:
+- Frontend: Next.js (app router) + TypeScript + Tailwind
+- Backend: Next.js  API routes (+ Zod)
+- Database: Supabase Postgres, schema via Prisma
+- Auth: Supabase Auth
+- Deployment: Vercel
+- Testing: Playwright + GitHub Actions
 
 ## Getting Started
 
 ### Prerequisites
 
 - Node.js (version)
-- [Database] running locally or a connection string
-- Any API keys needed (see Environment Variables below)
+- Database will be conencted shortly, info will be updated
+- Any API keys needed will be shared shortly (probably none, but still)
 
 ### Installation
 
@@ -33,7 +34,7 @@ Create a `.env.local` file in the root with:
 ```
 DATABASE_URL=
 NEXTAUTH_SECRET=
-# add other keys as needed
+# the keys will be added shortly
 ```
 
 Never commit `.env` files. They're already in `.gitignore`.
@@ -62,9 +63,7 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md) for branch naming, commit conventions, 
 
 ## Team
 
-- Tech Lead: Hande Naz Kavas
-- Developers:
+- Dev: Hande Naz Kavas
 
 ## License
-
-[MIT / TBD]
+TBD
