@@ -12,8 +12,63 @@ datasource db {
   provider = "postgresql"
 }
 
-model HealthCheck {
-  id        Int      @id @default(autoincrement())
-  message   String
+enum Role {
+  ADMIN
+  MEMBER
+}
+
+enum QuestionCategory {
+  TECHNICAL
+  SOCIAL
+}
+
+enum SubmissionStatus {
+  PENDING
+  APPROVED
+  DECLINED
+}
+
+model User {
+  id          String       @id                 // Supabase Auth user id
+  email       String       @unique
+  name        String
+  role        Role         @default(MEMBER)
+  teamId      String?
+  team        Team?        @relation(fields: [teamId], references: [id])
+  submissions Submission[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+model Team {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  members   User[]
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Question {
+  id          String           @id @default(uuid())
+  text        String
+  category    QuestionCategory
+  points      Int
+  boardIndex  Int              @unique          // 0-15 on the 4x4 board
+  submissions Submission[]
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+}
+
+model Submission {
+  id         String           @id @default(uuid())
+  answer     String
+  status     SubmissionStatus @default(PENDING)
+  userId     String
+  user       User             @relation(fields: [userId], references: [id])
+  questionId String
+  question   Question         @relation(fields: [questionId], references: [id])
+  createdAt  DateTime         @default(now())
+  updatedAt  DateTime         @updatedAt
+
+  @@unique([userId, questionId])
 }
