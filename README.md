@@ -1,4 +1,4 @@
-# Jumbo'ngo
+# Jumbingo
 
 JumBINGO is an online Bingo app where each box contains a Tufts or programming-related trivia question or task. Each member logs in with their Tufts credentials, and their account is automatically created by reading their names from the mail handle. When they log in, they see the team options and select one to join. Admins can view, update, and delete players, teams, and questions. Everyone can see the leaderboard, where teams and individuals are ranked by their dynamic points. 
 
