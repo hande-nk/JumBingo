@@ -22,8 +22,8 @@ JumBINGO is an online Bingo app where each box contains a Tufts or programming-r
 ### Installation
 
 ```bash
-git clone <repo-url>
-cd <repo-name>
+git clone https://github.com/hande-nk/JumBingo.git
+cd jumbingo
 npm install
 ```
 
