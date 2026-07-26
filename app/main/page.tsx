@@ -2,6 +2,7 @@
 import { prisma } from "@/lib/prisma";
 import { getCurrentProfile } from "@/lib/auth-helpers";
 import Link from "next/link";
+import { UserMenu } from "./UserMenu";
 
 export default async function MainPage() {
   const profile = await getCurrentProfile();
@@ -14,7 +15,15 @@ export default async function MainPage() {
       <div className="max-w-4xl mx-auto">
         <header className="flex items-center justify-between mb-6">
           <h1 className="text-2xl font-bold">Jumbingo</h1>
-          <span className="text-sm text-gray-400">{profile?.name}</span>
+          <div className="flex items-center gap-4">
+            <Link
+              href="/leaderboard"
+              className="text-sm text-gray-300 hover:text-white rounded-md border border-gray-700 px-3 py-1"
+            >
+              Leaderboard
+            </Link>
+            <UserMenu name={profile?.name ?? ""} isAdmin={profile?.role === "ADMIN"} />
+          </div>
         </header>
 
         <div className="grid grid-cols-4 gap-3">
