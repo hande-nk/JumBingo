@@ -1,5 +1,6 @@
 import { login, signup } from "./actions";
 
+
 export default async function LoginPage({
   searchParams,
 }: {
