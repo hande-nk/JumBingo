@@ -10,6 +10,15 @@ export default async function MainPage() {
     orderBy: { boardIndex: "asc" },
   });
 
+  // the current user's own submissions, keyed by question
+  const mySubs = profile
+    ? await prisma.submission.findMany({
+        where: { userId: profile.id },
+        select: { questionId: true, status: true },
+      })
+    : [];
+  const statusByQuestion = new Map(mySubs.map((s) => [s.questionId, s.status]));
+
   return (
     <main className="min-h-screen bg-black text-white p-8">
       <div className="max-w-4xl mx-auto">
@@ -27,25 +36,60 @@ export default async function MainPage() {
         </header>
 
         <div className="grid grid-cols-4 gap-3">
-            {questions.map((q) => (
-                <Link
-                    key={q.id}
-                    href={`/question/${q.id}`}
-                    className="rounded-lg border border-gray-700 bg-gray-900 p-4 flex flex-col gap-2 min-h-32 hover:border-gray-400 transition"
-                >
-                    <span
-                    className={`text-xs px-2 py-0.5 rounded-full w-fit ${
-                        q.category === "TECHNICAL"
-                        ? "bg-indigo-900 text-indigo-200"
-                        : "bg-emerald-900 text-emerald-200"
+                  
+        {questions.map((q) => {
+          const myStatus = statusByQuestion.get(q.id);
+          const answered = Boolean(myStatus);
+
+          const className = `rounded-lg border p-4 flex flex-col gap-2 min-h-32 ${
+            answered
+              ? "border-gray-800 bg-gray-900/50 opacity-60 cursor-not-allowed"
+              : "border-gray-700 bg-gray-900 hover:border-gray-400 transition"
+          }`;
+
+          const inner = (
+            <>
+              <span
+                className={`text-xs px-2 py-0.5 rounded-full w-fit ${
+                  q.category === "TECHNICAL"
+                    ? "bg-indigo-900 text-indigo-200"
+                    : "bg-emerald-900 text-emerald-200"
+                }`}
+              >
+                {q.category === "TECHNICAL" ? "Technical" : "Social"}
+              </span>
+
+              <p className="text-sm">{q.text}</p>
+
+              <div className="mt-auto flex items-center justify-between">
+                <span className="text-xs text-gray-400">{q.points} pts</span>
+                {myStatus && (
+                  <span
+                    className={`text-xs px-2 py-0.5 rounded-full ${
+                      myStatus === "APPROVED"
+                        ? "bg-emerald-900 text-emerald-200"
+                        : myStatus === "PENDING"
+                        ? "bg-gray-700 text-gray-300"
+                        : "bg-red-900 text-red-200"
                     }`}
-                    >
-                    {q.category === "TECHNICAL" ? "Technical" : "Social"}
-                    </span>
-                    <p className="text-sm">{q.text}</p>
-                    <span className="text-xs text-gray-400 mt-auto">{q.points} pts</span>
-                </Link>
-            ))}           
+                  >
+                    {myStatus === "APPROVED"
+                      ? "Approved"
+                      : myStatus === "PENDING"
+                      ? "Pending"
+                      : "Declined"}
+                  </span>
+                )}
+              </div>
+            </>
+          );
+
+          return answered ? (
+            <div key={q.id} className={className}>{inner}</div>
+          ) : (
+            <Link key={q.id} href={`/question/${q.id}`} className={className}>{inner}</Link>
+          );
+        })}
         </div>
       </div>
     </main>
