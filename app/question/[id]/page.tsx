@@ -1,5 +1,6 @@
-import { notFound } from "next/navigation";
+import { redirect, notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
+import { getCurrentProfile } from "@/lib/auth-helpers";
 import { AnswerForm } from "./AnswerForm";
 
 export default async function QuestionPage({
@@ -8,8 +9,20 @@ export default async function QuestionPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const question = await prisma.question.findUnique({ where: { id } });
+
+  const [profile, question] = await Promise.all([
+    getCurrentProfile(),
+    prisma.question.findUnique({ where: { id } }),
+  ]);
   if (!question) notFound();
+
+  // Already answered? Send them back to the board.
+  if (profile) {
+    const existing = await prisma.submission.findUnique({
+      where: { userId_questionId: { userId: profile.id, questionId: id } },
+    });
+    if (existing) redirect("/main");
+  }
 
   return (
     <main className="min-h-screen bg-black text-white p-8">
