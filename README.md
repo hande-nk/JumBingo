@@ -15,7 +15,7 @@ JumBINGO is an online Bingo app where each box contains a Tufts or programming-r
 
 ### Prerequisites
 
-- Node.js (version)
+- Node.js (22 or newer)
 - Database will be conencted shortly, info will be updated
 - Any API keys needed will be shared shortly (probably none, but still)
 
@@ -39,22 +39,35 @@ NEXTAUTH_SECRET=
 
 Never commit `.env` files. They're already in `.gitignore`.
 
-### Running Locally
+### Testing
+End-to-end tests live in e2e/ and use Playwright. They log in with TEST_EMAIL / TEST_PASSWORD (a pre-existing Supabase account) and run against a dev server that Playwright starts automatically.
 
-```bash
-npm run dev
+```
+bash
+npx playwright test --project=chromium
 ```
 
-App runs at `http://localhost:3000`.
+The same tests run in CI on every push and pull request via .github/workflows/playwright.yml, using repository secrets for the environment variables.
+
+### Deployment
+
+Deployed on Vercel, which auto-deploys on merge to main and creates a preview deployment for every pull request. Set the same environment variables in the Vercel project settings (Production and Preview). For production scale, use the Supabase transaction pooler (port 6543) string as DATABASE_URL.
 
 ## Project Structure
 
 ```
-/app or /pages   -> routes / pages
-/components      -> reusable UI components
-/lib             -> helper functions, API clients, db utilities
-/prisma          -> database schema (if using Prisma)
-/public          -> static assets
+app/            App Router routes and pages
+  api/          route handlers (JSON endpoints)
+  login/        auth pages and server actions
+  main/         the bingo board
+  question/     answer submission
+  admin/        answer review and question management
+  leaderboard/  rankings
+  user/         profile with team join and leave
+lib/            shared server code (prisma client, auth helpers, leaderboard, game logic)
+  supabase/     Supabase browser and server clients, session proxy
+prisma/         schema, migrations, seed script
+e2e/            Playwright tests
 ```
 
 ## Contributing
