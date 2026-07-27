@@ -13,13 +13,19 @@ export function nameFromEmail(email: string): string {
 
 // Create the profile if it doesn't exist yet; leave it alone if it does.
 export async function upsertUserProfile(id: string, email: string) {
-  return prisma.user.upsert({
-    where: { id },
-    update: {},
-    create: {
-      id,
-      email,
-      name: nameFromEmail(email),
-    },
-  });
+  const existing = await prisma.user.findUnique({ where: { id } });
+  if (existing) return existing;
+
+  try {
+    return await prisma.user.create({
+      data: { id, email, name: nameFromEmail(email) },
+    });
+  } catch (e: unknown) {
+    // Another profile already uses this email (e.g. seeded data).
+    // Don't block login; just skip creating a duplicate.
+    if (typeof e === "object" && e !== null && "code" in e && e.code === "P2002") {
+      return null;
+    }
+    throw e;
+  }
 }
