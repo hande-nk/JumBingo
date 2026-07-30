@@ -5,6 +5,7 @@
 import "dotenv/config";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../app/generated/prisma/client";
+import type { QuestionCategory } from "../app/generated/prisma/client";
 
 const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
 const prisma = new PrismaClient({ adapter });
@@ -33,7 +34,12 @@ async function main() {
   });
 
   // Questions: a 4x4 board, boardIndex 0-15, mixed Technical/Social.
-  const questions = [
+  const questions: {
+    text: string;
+    category: QuestionCategory;
+    points: number;
+    boardIndex: number;
+  }[] = [
     { text: "Name three HTTP methods and what each does in a CRUD app.", category: "TECHNICAL", points: 20, boardIndex: 0 },
     { text: "Find someone who has been to another country.", category: "SOCIAL", points: 10, boardIndex: 1 },
     { text: "What does CRUD stand for?", category: "TECHNICAL", points: 20, boardIndex: 2 },
