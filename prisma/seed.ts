@@ -10,13 +10,17 @@ const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
 const prisma = new PrismaClient({ adapter });
 
 async function main() {
+  if (process.env.CONFIRM_SEED !== "yes") {
+    throw new Error(
+      "Refusing to run the destructive seed. Run with CONFIRM_SEED=yes if you really mean it."
+    );
+  }
   // Clear existing data. Order matters: delete children before parents,
   // because of the foreign keys (a submission points at a user and a question).
   await prisma.submission.deleteMany();
   await prisma.user.deleteMany();
   await prisma.question.deleteMany();
   await prisma.team.deleteMany();
-
   // Teams
   const byteClub = await prisma.team.create({
     data: { id: "team-byte", name: "Byte club" },
