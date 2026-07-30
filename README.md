@@ -27,18 +27,6 @@ cd jumbingo
 npm install
 ```
 
-### Environment Variables
-
-Create a `.env.local` file in the root with:
-
-```
-DATABASE_URL=
-NEXTAUTH_SECRET=
-# the keys will be added shortly
-```
-
-Never commit `.env` files. They're already in `.gitignore`.
-
 ### Testing
 End-to-end tests live in e2e/ and use Playwright. They log in with TEST_EMAIL / TEST_PASSWORD (a pre-existing Supabase account) and run against a dev server that Playwright starts automatically.
 
@@ -70,13 +58,9 @@ prisma/         schema, migrations, seed script
 e2e/            Playwright tests
 ```
 
-## Contributing
-
-See [CONTRIBUTING.md](./CONTRIBUTING.md) for branch naming, commit conventions, and the PR process.
 
 ## Team
 
 - Dev: Hande Naz Kavas
 
-## License
-TBD
+
